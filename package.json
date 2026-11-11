@@ -1,0 +1,198 @@
+{
+  "name": "ai-autotest",
+  "displayName": "AI Auto Test",
+  "description": "Turn the test cases your QA team already writes (Markdown or multi-sheet Excel) into Playwright scripts with an LLM, run them, collect evidence and report bugs, all inside VS Code.",
+  "version": "0.1.0",
+  "publisher": "your-publisher",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khanhnv1704/auto-test-tool.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Testing"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aitest",
+          "title": "AI Auto Test",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "aitest": [
+        {
+          "id": "aitest.actions",
+          "name": "AI Auto Test",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aitest.generateTests",
+        "title": "AI Auto Test: Generate Tests from Requirement Docs"
+      },
+      {
+        "command": "aitest.reloadTestCasesFromSource",
+        "title": "AI Auto Test: Reload Test Cases from Source File"
+      },
+      {
+        "command": "aitest.importTestCases",
+        "title": "AI Auto Test: Import Test Cases (Markdown / Excel)"
+      },
+      {
+        "command": "aitest.suggestMissingTestCases",
+        "title": "AI Auto Test: Suggest Missing Test Cases"
+      },
+      {
+        "command": "aitest.runTests",
+        "title": "AI Auto Test: Run Tests"
+      },
+      {
+        "command": "aitest.manageSchedules",
+        "title": "AI Auto Test: Manage Test Schedules"
+      },
+      {
+        "command": "aitest.showReport",
+        "title": "AI Auto Test: Show Report"
+      },
+      {
+        "command": "aitest.showFunctionTestCases",
+        "title": "AI Auto Test: Show Test Cases of a Function"
+      },
+      {
+        "command": "aitest.renameFunction",
+        "title": "AI Auto Test: Rename Function",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "aitest.connectBacklogProject",
+        "title": "AI Auto Test: Connect Backlog Project",
+        "icon": "$(link)"
+      },
+      {
+        "command": "aitest.disconnectBacklogProject",
+        "title": "AI Auto Test: Disconnect Backlog"
+      },
+      {
+        "command": "aitest.openMcpSetting",
+        "title": "AI Auto Test: Integrations",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "aitest.showProjectSetting",
+        "title": "AI Auto Test: Project Settings"
+      },
+      {
+        "command": "aitest.addFunction",
+        "title": "AI Auto Test: Add Function",
+        "icon": "$(add)"
+      },
+      {
+        "command": "aitest.editFunction",
+        "title": "AI Auto Test: Edit Function",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "aitest.deleteFunction",
+        "title": "AI Auto Test: Delete Function",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "aitest.addSchedule",
+        "title": "AI Auto Test: Add Test Schedule",
+        "icon": "$(add)"
+      },
+      {
+        "command": "aitest.editSchedule",
+        "title": "AI Auto Test: Edit Test Schedule",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "aitest.deleteSchedule",
+        "title": "AI Auto Test: Delete Test Schedule",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "aitest.deleteRound",
+        "title": "AI Auto Test: Delete Round",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "aitest.changeDefaultModel",
+        "title": "AI Auto Test: Change Default AI Model"
+      }
+    ],
+    "configuration": {
+      "title": "AI Auto Test",
+      "properties": {
+        "aitest.generation.concurrency": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "description": "How many generation jobs (each one is a separate `claude -p` process) may run at the same time during Sync Test."
+        },
+        "aitest.generation.batchSize": {
+          "type": "number",
+          "default": 20,
+          "minimum": 1,
+          "description": "Maximum number of test cases per generation job. Smaller batches run more jobs in parallel, but every job is a separate `claude -p` call that pays the fixed prompt cost again, so more batches cost more tokens for the same amount of work. For a few dozen test cases, a batch size large enough to fit them all in one job is usually the cheapest."
+        },
+        "aitest.generation.model": {
+          "type": "string",
+          "default": "haiku",
+          "description": "Default model for every Claude call (passed as --model to `claude -p`): script generation, missing test case suggestions, and failure analysis. Change it from the Settings section in the sidebar. Sync Test can also pick a model per run (stored per function as syncModel in meta.json)."
+        },
+        "aitest.execution.workers": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Number of Playwright workers for Run Tests (passed as --workers). 0 = automatic: 1 worker when running headed so you can follow along; set a number above 0 to force parallel runs."
+        },
+        "aitest.execution.slowMoMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "Delay in ms between Playwright actions during Run Tests, so a human can follow what happens in the browser. 0 = full speed."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true})\"",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "vscode:prepublish": "npm run clean && npm run compile",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.2",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.48.0",
+    "exceljs": "^4.4.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "playwright",
+    "llm",
+    "claude",
+    "test automation",
+    "excel"
+  ]
+}
