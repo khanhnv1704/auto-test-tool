@@ -1,0 +1,15 @@
+.vscode/**
+.github/**
+src/**
+examples/**
+docs/**
+out/**/*.map
+out/**/*.test.js
+**/*.test.ts
+**/*.ts
+!templates/*.ts
+.gitignore
+.aitest/**
+tsconfig.json
+vitest.config.ts
+package-lock.json

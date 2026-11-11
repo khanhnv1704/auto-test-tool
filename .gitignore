@@ -1,0 +1,20 @@
+node_modules/
+out/
+*.vsix
+*.log
+.DS_Store
+
+# Extension data written into the project under test
+.aitest/
+
+# Example app
+examples/demo-signup-app/.next/
+examples/demo-signup-app/node_modules/
+examples/demo-signup-app/.env.local
+examples/demo-signup-app/test-results/
+examples/demo-signup-app/playwright-report/
+examples/test-cases/*.backup-*.xlsx
+
+# Local env files
+.env
+.env.local
